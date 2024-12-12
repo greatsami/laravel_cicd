@@ -1,0 +1,12 @@
+[
+  {
+    "name": "server-1",
+    "ip": "159.65.145.9",
+    "username": "root",
+    "password": "github2024Actions",
+    "port": "22",
+    "beforeHooks": "",
+    "afterHooks": "",
+    "path": "/var/www/html"
+  }
+]
