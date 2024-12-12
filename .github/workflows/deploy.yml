@@ -19,10 +19,10 @@ jobs:
           npm install
           npm run build
 
-      - name: Configure PHP 8.2
+      - name: Configure PHP 8.0
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: 8.0
           extensions: mbstring, ctype, fileinfo, openssl, PDO, bcmath, json, tokenizer, xml
           ini-values: post_max_size=256M, max_execution_time=180
 
@@ -140,4 +140,4 @@ jobs:
           envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH
           script: |
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
-            service php8.2-fpm reload
+            service php8.0-fpm reload
