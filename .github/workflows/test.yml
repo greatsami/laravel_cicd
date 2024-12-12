@@ -1,18 +1,14 @@
-name: Laravel Pint
+name: Tests
 
 on:
-  push:
-    - main
+  pull_request
 
 jobs:
-  laravel-pint:
-    name: Create deployment artifacts
+  run-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
 
       - name: Setup PHP and Composer
         uses: shivammathur/setup-php@v2
@@ -20,11 +16,19 @@ jobs:
           php-version: '8.2'
           tools: composer:v2
 
-      - name: Install Laravel pint
-        run: composer global require laravel/pint
+      - name: Install Dependencies
+        run: composer install -q --no-interaction
 
-      - name: Run pint
-        run: pint
+      - name: Prep Application
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run Tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
+        run: php artisan test
 
       - name: Push Changes Back to repo
         run: |
