@@ -22,3 +22,9 @@ jobs:
         with:
           php-version: 8.2
           extensions: mbstring, ctype, fileinfo, openssl, PDO, bcmath, json, tokenizer, xml
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-dev --no-progress --no-interaction --no-suggest
+
+      - name: Create deployment artifact
+        run: tar -czf app.tar.gz --exclude=*.git --exclude=node_modules *
