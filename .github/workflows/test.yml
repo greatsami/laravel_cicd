@@ -7,6 +7,19 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
 
+    services:
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          DB_DATABASE: laravel
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+
     env:
       PHP_VERSION: '8.3'
       PHP_EXTENSIONS: dom, curl, libxml, mbstring, zip, pcntl, pdo, gd, redis, igbinary, msgpack, lzf, zstd, lz4, memcached, gmp, :php-psr
