@@ -1,0 +1,51 @@
+name: Laravel Pint
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  laravel-pint:
+    name: Create deployment artifacts
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          DB_DATABASE: laravel
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          php-version: '8.3'
+          php-extensions: 'json, dom, curl, libxml, mbstring, zip, pcntl, pdo'
+          tools: composer:v2
+
+      - name: Install Laravel pint
+        run: composer global require laravel/pint
+
+      - name: Run pint
+        run: pint
+
+      - name: Push Changes Back to repo
+        run: |
+          git config user.name "gh Sami Mansour" 
+          git config user.email "samiman.net@gmail.com" 
+          git add .
+          git commit -m "Laravel Pint" || exit 0
+          git push
