@@ -1,27 +1,51 @@
-name: Laravel Pint
+name: Deploy Laravel Application to Production Server
 
 on:
-  pull_request
+  push:
+    branches:
+      - main
 
 jobs:
-  laravel-pint:
-    name: Create deployment artifacts
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
-        uses: shivammathur/setup-php@v2
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: ./.github/actions/setup
         with:
-          php-version: '8.2'
-          tools: composer:v2
+          php-version: '8.3'
 
-      - name: Setup PHP and Composer
-        uses: shivammathur/setup-php@2.31.1
+      - name: Install Project Dependencies
+        run: composer install -optimize-autoloader --no-dev --no-interaction --no-progress --prefer-dist
 
-      - name: Install Laravel pint
-        run: composer global require laravel/pint
+      - name: Install Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '20'
 
-      - name: Run pint
-        run: pint --test
+      - name: Install NPM Dependencies
+        run: npm run build
 
-      - name: Push Changes Back to repo
-        run: echo "TODO"
+      - name: Synchronize Files To Server
+        uses: easingthemes/ssh-deploy@v5.1.0
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SOURCE: "."
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: '/var/www/html'
+      #          EXCLUDE: "/vendor/, /node_modules/"
+
+      - name: Run Remote/Artisan Commands
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/html
+            php artisan migrate --force
+            php artisan optimize
