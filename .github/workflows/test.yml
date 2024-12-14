@@ -38,18 +38,16 @@ jobs:
           extensions: ${{ env.PHP_EXTENSIONS }}
           tools: composer:v2
 
-      - name: Get Cache Composer dir
-        id: composer-cache-dir
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache Dependencies
-        uses: actions/cache@v4.2.0
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v4
         with:
+          path: ${{ steps.composer-cache.outputs.dir }}
           key: composer-cache-${{ hashFiles('**/composer.lock') }}
-          path: ${{ steps.composer-cache-dir.output.dir }}
-          restore-keys: composer-cache-
-
-
+          restore-keys: |
+            composer-cache-
 
       - name: Install Project Dependencies
         run: composer install -q --no-interaction --no-progress
