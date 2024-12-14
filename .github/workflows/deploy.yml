@@ -19,7 +19,7 @@ jobs:
           php-version: '8.3'
 
       - name: Install Project Dependencies
-        run: composer install -optimize-autoloader --no-dev --no-interaction --no-progress --prefer-dist
+        run: composer install --optimize-autoloader --no-dev --no-interaction --no-progress --prefer-dist
 
       - name: Install Node.js
         uses: actions/setup-node@v4.1.0
