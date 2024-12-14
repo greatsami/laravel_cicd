@@ -15,7 +15,13 @@ jobs:
         image: redis:latest
         ports:
           - 6379:6379
-
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          DB_DATABASE: laravel
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
 
     steps:
       - name: Checkout Code
@@ -26,7 +32,8 @@ jobs:
       - name: Setup PHP and Composer
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd, redis, igbinary, msgpack, lzf, zstd, lz4, memcached, gmp, :php-psr
           tools: composer:v2
 
       - name: Install Laravel pint
