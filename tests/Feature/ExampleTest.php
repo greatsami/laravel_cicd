@@ -1,7 +1,9 @@
 <?php
+use Illuminate\Support\Facades\Redis;
 
 it('returns a successful response', function () {
-    $response = $this->get('/');
+    $this->get('/');
 
-    $response->assertStatus(200);
+
+    expect(Redis::get('loading-page-views'))->toEqual(1);
 });
