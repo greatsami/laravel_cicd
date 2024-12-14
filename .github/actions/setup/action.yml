@@ -14,7 +14,7 @@ inputs:
   coverage:
     description: The coverage used to use.
     required: false
-    default: none
+    default: xdebug
 
 
 runs:
