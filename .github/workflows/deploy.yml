@@ -29,11 +29,11 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Setup PHP and Composer
-        uses: shivammathur/setup-php@v2
+      - name: Setup
+        uses: ./.github/actions/setup
         with:
           php-version: '8.3'
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd, redis, igbinary, msgpack, lzf, zstd, lz4, memcached, gmp, :php-psr
+          php-extensions: 'json, dom, curl, libxml, mbstring, zip, pcntl, pdo'
           tools: composer:v2
 
       - name: Install Laravel pint
